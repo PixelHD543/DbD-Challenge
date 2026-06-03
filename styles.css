@@ -214,3 +214,86 @@ h1 {
 .clear-btn:hover {
     background: rgba(255,107,107,0.5);
 }
+/* Difficulty Badge */
+.difficulty-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Points System */
+.points-system {
+    margin-top: 20px;
+    background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,107,0.1));
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.points-card {
+    text-align: center;
+}
+
+.points-label {
+    font-size: 0.9em;
+    letter-spacing: 2px;
+    color: #ffd93d;
+}
+
+.points-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    display: block;
+    margin: 10px 0;
+    color: #ffd93d;
+    transition: transform 0.2s;
+}
+
+.complete-btn {
+    background: #4ecdc4;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    color: #1a1a2e;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: all 0.3s;
+}
+
+.complete-btn:hover {
+    transform: scale(1.05);
+    background: #ff6b6b;
+    color: white;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4ecdc4;
+    color: #1a1a2e;
+    padding: 12px 24px;
+    border-radius: 10px;
+    animation: slideIn 0.3s ease;
+    z-index: 1000;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.perk-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.perk-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
