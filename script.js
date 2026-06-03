@@ -8,9 +8,7 @@ const survivors = {
         "Circle of Healing", "Off the Record", "Built to Last", "Flashbang"
     ],
     items: [
-        "Medkit (Rare)", "Toolbox (Common)", "Flashlight (Ultra Rare)", 
-        "Key (Skeleton)", "Map (Red Twine)", "Firecrackers",
-        "Broken Key", "Toolbox (Engineer's)", "Medkit (Emergency)"
+        "Medkit", "Toolbox", "Map", "Rainbow Map", "Ranger's Aid Kit", "Broken Key"
     ]
 };
 
@@ -68,10 +66,10 @@ const challenges = {
 };
 
 const difficultyConfig = {
-    easy: { color: "#4ecdc4", icon: "⭐", name: "Easy", failShots: 3 },
-    medium: { color: "#ffd93d", icon: "⭐⭐", name: "Medium", failShots: 2 },
-    hard: { color: "#ff8e8e", icon: "⭐⭐⭐", name: "Hard", failShots: 1 },
-    extreme: { color: "#ff4444", icon: "💀", name: "Extreme", failShots: 1 }
+    easy: { color: "#4ecdc4", icon: "⭐", name: "EASY", failShots: 3 },
+    medium: { color: "#ffd93d", icon: "⭐⭐", name: "MEDIUM", failShots: 2 },
+    hard: { color: "#ff8e8e", icon: "⭐⭐⭐", name: "HARD", failShots: 1 },
+    extreme: { color: "#ff4444", icon: "💀", name: "EXTREME", failShots: 1 }
 };
 
 const drinkingRules = {
@@ -80,8 +78,8 @@ const drinkingRules = {
         "Take a drink when you get hooked for the first time",
         "Take a sip when the killer finds you in a locker",
         "Everyone drinks when the killer gets a 4k",
-        "Take a sip when you sandbag a teammate (accidentally)",
-        "Take a drink for every gen that pops while you're in chase"
+        "Take a sip when you sandbag a teammate",
+        "Take a drink for every gen that pops while in chase"
     ],
     killer: [
         "Take a sip when a survivor teabags at a pallet",
@@ -89,44 +87,68 @@ const drinkingRules = {
         "Everyone drinks when a survivor flashlight saves",
         "Take a sip when you get gen rushed",
         "Take a drink for every DS/Dead Hard you eat",
-        "Everyone cheers (drink) when you get a 4k"
+        "Everyone cheers when you get a 4k"
     ]
 };
 
-// ==================== PLAYER SYSTEM ====================
-let players = [
-    { id: 1, name: "Player 1", score: 0 }
-];
-let currentPlayerIndex = 0;
-let currentChallenge = null;
-let currentMode = "drinking";
+// ==================== IMAGE MAPPING ====================
+function getPerkImagePath(perkName, isSurvivor) {
+    // Map common perk names to your actual filenames
+    const perkMap = {
+        "Dead Hard": "IconPerks_GeneticLimits.png", // Using available image
+        "Borrowed Time": "IconPerks_scavenger.png",
+        "Sprint Burst": "IconPerks_troubleshooter.png",
+        "Circle of Healing": "T_UI_iconPerks_AllShakingThunder.png",
+        "Unbreakable": "T_UI_iconPerks_ApocalypticIngenuity.png",
+        "Windows of Opportunity": "T_UI_iconPerks_ComeAndGetMe.png",
+        "Lithe": "T_UI_iconPerks_Conviction.png",
+        "Adrenaline": "T_UI_iconPerks_LastStand.png",
+        "NOED": "IconPerks_ForcedHesitation.png",
+        "Pop Goes the Weasel": "T_UI_iconPerks_ForeverEntwined.png",
+        "Ruin": "T_UI_iconPerks_HexOvertureOfDoom.png"
+    };
+    
+    let filename = perkMap[perkName];
+    if (!filename) {
+        // Fallback: try to generate filename
+        filename = `IconPerks_${perkName.replace(/\s/g, '')}.png`;
+    }
+    
+    const folder = isSurvivor ? 'perks_survivor' : 'perks_killer';
+    return `images/${folder}/${filename}`;
+}
 
-// ==================== DOM ELEMENTS ====================
+function getItemImagePath(itemName) {
+    const itemMap = {
+        "Medkit": "iconltems_medkit.png",
+        "Toolbox": "iconltems_toolbox.png",
+        "Map": "iconltems_map.png",
+        "Rainbow Map": "iconltems_rainbowMap.png",
+        "Ranger's Aid Kit": "iconltems_rangersAidKit.png",
+        "Broken Key": "iconltems_rundownAidKit.png"
+    };
+    
+    let filename = itemMap[itemName];
+    if (!filename) filename = "iconltems_toolbox.png";
+    return `images/items/${filename}`;
+}
+
+// ==================== PLAYER SYSTEM ====================
+let players = [];
+let nextPlayerId = 1;
+let currentMode = "drinking";
+let globalHistory = [];
+
+// DOM Elements
+const playersGrid = document.getElementById('playersGrid');
 const roleFilter = document.getElementById('roleFilter');
 const difficultyFilter = document.getElementById('difficultyFilter');
-const generateBtn = document.getElementById('generateBtn');
-const completeBtn = document.getElementById('completeChallengeBtn');
-const failBtn = document.getElementById('failChallengeBtn');
-const roleBadge = document.getElementById('roleBadge');
-const challengeTitle = document.getElementById('challengeTitle');
-const challengeDescription = document.getElementById('challengeDescription');
-const perksList = document.getElementById('perksList');
-const itemsList = document.getElementById('itemsList');
-const drinkingRulesDiv = document.getElementById('drinkingRules');
-const drinkList = document.getElementById('drinkList');
-const historyList = document.getElementById('historyList');
-const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-const difficultyBadge = document.getElementById('difficultyBadge');
-const currentPlayerNum = document.getElementById('currentPlayerNum');
-const currentPlayerName = document.getElementById('currentPlayerName');
-const currentPlayerScore = document.getElementById('currentPlayerScore');
-const prevPlayerBtn = document.getElementById('prevPlayerBtn');
-const nextPlayerBtn = document.getElementById('nextPlayerBtn');
+const globalGenerateBtn = document.getElementById('globalGenerateBtn');
 const addPlayerBtn = document.getElementById('addPlayerBtn');
-const removePlayerBtn = document.getElementById('removePlayerBtn');
-const failurePenaltySpan = document.getElementById('failurePenalty');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const historyList = document.getElementById('historyList');
 
-// ==================== HELPER FUNCTIONS ====================
+// Helper Functions
 function getRandomItem(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -144,7 +166,7 @@ function getFilteredChallenges() {
         pool = pool.filter(c => c.difficulty === difficulty);
     }
     
-    return pool;
+    return pool.length ? pool : [...challenges.survivor, ...challenges.killer];
 }
 
 function getRandomBuild(role) {
@@ -164,224 +186,218 @@ function getRandomBuild(role) {
     return { perks, items };
 }
 
-function updateUIForPlayer() {
-    const player = players[currentPlayerIndex];
-    currentPlayerNum.textContent = currentPlayerIndex + 1;
-    currentPlayerName.textContent = player.name;
-    currentPlayerScore.textContent = player.score;
+function generateChallengeForPlayer(player) {
+    const pool = getFilteredChallenges();
+    const challenge = getRandomItem(pool);
+    const isSurvivor = challenges.survivor.includes(challenge);
+    const build = getRandomBuild(isSurvivor ? 'survivor' : 'killer');
+    
+    player.currentChallenge = { ...challenge, isSurvivor, build };
+    return player.currentChallenge;
 }
 
 function addToHistory(entry) {
-    const historyListEl = document.getElementById('historyList');
-    const li = document.createElement('li');
-    li.innerHTML = `[${entry.timestamp}] ${entry.role} - ${entry.challenge} ${entry.mode === 'drinking' ? '🍺' : '🎯'} +${entry.points}pts ${entry.player ? `(${entry.player})` : ''}`;
-    historyListEl.insertBefore(li, historyListEl.firstChild);
-    if (historyListEl.children.length > 10) {
-        historyListEl.removeChild(historyListEl.lastChild);
-    }
+    globalHistory.unshift(entry);
+    if (globalHistory.length > 20) globalHistory.pop();
+    updateHistoryDisplay();
 }
 
-function addPointsToCurrentPlayer(points) {
-    players[currentPlayerIndex].score += points;
-    currentPlayerScore.textContent = players[currentPlayerIndex].score;
-    
-    // Animation
-    currentPlayerScore.style.transform = 'scale(1.2)';
-    setTimeout(() => { currentPlayerScore.style.transform = 'scale(1)'; }, 300);
-}
-
-function generateChallenge() {
-    const pool = getFilteredChallenges();
-    if (pool.length === 0) {
-        challengeTitle.textContent = "No Challenges!";
-        challengeDescription.textContent = "Change your filters - no challenges match!";
-        return;
-    }
-    
-    const challenge = getRandomItem(pool);
-    const isSurvivor = challenges.survivor.includes(challenge) || (roleFilter.value === "mixed" && Math.random() > 0.5);
-    const role = isSurvivor ? 'survivor' : 'killer';
-    const roleName = isSurvivor ? 'SURVIVOR' : 'KILLER';
-    const build = getRandomBuild(role);
-    
-    // Store current challenge
-    currentChallenge = { ...challenge, role, roleName, build };
-    
-    // Update display
-    roleBadge.textContent = roleName;
-    roleBadge.style.background = isSurvivor ? '#4ecdc4' : '#ff6b6b';
-    challengeTitle.textContent = challenge.title;
-    challengeDescription.textContent = challenge.desc;
-    
-    // Difficulty badge
-    const diff = difficultyConfig[challenge.difficulty];
-    difficultyBadge.innerHTML = `${diff.icon} ${diff.name} ${diff.icon}`;
-    difficultyBadge.style.background = diff.color;
-    difficultyBadge.style.display = 'inline-block';
-    
-    // Update builds
-    perksList.innerHTML = build.perks.map(perk => `<div class="perk-item">✨ ${perk}</div>`).join('');
-    itemsList.innerHTML = build.items.map(item => `<div class="item-item">📦 ${item}</div>`).join('');
-    
-    // Update failure penalty display
-    failurePenaltySpan.innerHTML = `Easy=3 shots, Hard=1 shot (Current: ${diff.failShots} shot${diff.failShots > 1 ? 's' : ''} on fail)`;
-    
-    // Drinking rules
-    if (currentMode === 'drinking') {
-        const rules = drinkingRules[role];
-        const selectedRules = [];
-        for(let i = 0; i < 3; i++) {
-            selectedRules.push(getRandomItem(rules));
-        }
-        drinkList.innerHTML = selectedRules.map(rule => `<li>🍺 ${rule}</li>`).join('');
-        drinkingRulesDiv.style.display = 'block';
-    } else {
-        drinkingRulesDiv.style.display = 'none';
-    }
-}
-
-function completeChallenge() {
-    if (!currentChallenge) return;
-    
-    const points = currentChallenge.points;
-    addPointsToCurrentPlayer(points);
-    
-    addToHistory({
-        timestamp: new Date().toLocaleTimeString(),
-        role: currentChallenge.roleName,
-        challenge: currentChallenge.title,
-        mode: currentMode,
-        points: points,
-        player: players[currentPlayerIndex].name
-    });
-    
-    // Show notification
-    showNotification(`✅ +${points} points for "${currentChallenge.title}"!`);
-    
-    generateChallenge();
-}
-
-function failChallenge() {
-    if (!currentChallenge) return;
-    
-    const diff = difficultyConfig[currentChallenge.difficulty];
-    const shots = diff.failShots;
-    
-    let drinkMessage = "";
-    if (currentMode === "drinking") {
-        drinkMessage = `🍺 ${players[currentPlayerIndex].name} must take ${shots} SHOT${shots > 1 ? 'S' : ''}! 🍺`;
-        showNotification(drinkMessage, "fail");
-    } else {
-        drinkMessage = `💀 Challenge failed! ${shots} drink penalty in drinking mode! 💀`;
-        showNotification(drinkMessage, "fail");
-    }
-    
-    addToHistory({
-        timestamp: new Date().toLocaleTimeString(),
-        role: currentChallenge.roleName,
-        challenge: `${currentChallenge.title} (FAILED)`,
-        mode: currentMode,
-        points: 0,
-        player: players[currentPlayerIndex].name
-    });
-    
-    generateChallenge();
+function updateHistoryDisplay() {
+    historyList.innerHTML = globalHistory.map(entry => 
+        `<li>[${entry.timestamp}] ${entry.playerName} - ${entry.challenge} ${entry.result === 'FAILED' ? '💀 FAILED 💀' : `✅ +${entry.points}pts`}</li>`
+    ).join('');
 }
 
 function showNotification(message, type = "success") {
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = message;
+    notification.className = `notification ${type === 'fail' ? 'fail' : ''}`;
+    notification.textContent = message;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
 }
 
-// ==================== PLAYER MANAGEMENT ====================
-function updatePlayerUI() {
-    currentPlayerNum.textContent = currentPlayerIndex + 1;
-    currentPlayerName.textContent = players[currentPlayerIndex].name;
-    currentPlayerScore.textContent = players[currentPlayerIndex].score;
+// Player Card Rendering
+function createDrinkingRulesHTML(role) {
+    if (currentMode !== 'drinking') return '';
+    const rules = drinkingRules[role];
+    const selectedRules = [];
+    for(let i = 0; i < 2; i++) {
+        selectedRules.push(getRandomItem(rules));
+    }
+    return `
+        <div class="drinking-rules">
+            <h4>🍺 DRINKING RULES (This Challenge)</h4>
+            <ul>
+                ${selectedRules.map(rule => `<li>${rule}</li>`).join('')}
+            </ul>
+        </div>
+    `;
 }
 
-function nextPlayer() {
-    if (players.length === 0) return;
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    updatePlayerUI();
-    generateChallenge();
+function renderPlayerCard(player) {
+    if (!player.currentChallenge) {
+        generateChallengeForPlayer(player);
+    }
+    
+    const challenge = player.currentChallenge;
+    const diff = difficultyConfig[challenge.difficulty];
+    const roleClass = challenge.isSurvivor ? 'survivor-badge' : 'killer-badge';
+    const roleText = challenge.isSurvivor ? 'SURVIVOR' : 'KILLER';
+    
+    // Build perks HTML with images
+    const perksHTML = challenge.build.perks.map(perk => {
+        const imgPath = getPerkImagePath(perk, challenge.isSurvivor);
+        return `
+            <div class="perk-item">
+                <img src="${imgPath}" class="perk-icon" alt="${perk}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display:none;">✨</span>
+                <span>${perk}</span>
+            </div>
+        `;
+    }).join('');
+    
+    const itemsHTML = challenge.build.items.map(item => {
+        const imgPath = getItemImagePath(item);
+        return `
+            <div class="perk-item">
+                <img src="${imgPath}" class="perk-icon" alt="${item}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display:none;">📦</span>
+                <span>${item}</span>
+            </div>
+        `;
+    }).join('');
+    
+    return `
+        <div class="player-card" data-player-id="${player.id}">
+            <div class="player-header">
+                <div class="player-name-section">
+                    <div class="player-avatar">🔪</div>
+                    <div class="player-name">${player.name}</div>
+                    <span class="role-badge ${roleClass}">${roleText}</span>
+                </div>
+                <div class="player-score">
+                    <span>🏆</span> ${player.score}
+                </div>
+                <button class="remove-player-btn" onclick="removePlayer(${player.id})">🗑️</button>
+            </div>
+            
+            <div class="challenge-area">
+                <div class="challenge-title">${challenge.title}</div>
+                <div class="challenge-desc">${challenge.desc}</div>
+                <span class="difficulty" style="background: ${diff.color}">${diff.icon} ${diff.name} ${diff.icon}</span>
+                
+                <div class="build-section">
+                    <h4>🎭 PERKS</h4>
+                    <div class="perks-grid">${perksHTML}</div>
+                    <h4>📦 ITEMS & ADD-ONS</h4>
+                    <div class="items-grid">${itemsHTML}</div>
+                </div>
+                
+                ${createDrinkingRulesHTML(challenge.isSurvivor ? 'survivor' : 'killer')}
+                
+                <div class="challenge-actions">
+                    <button class="btn-pass" onclick="completeChallenge(${player.id})">✓ PASS (+${challenge.points})</button>
+                    <button class="btn-fail" onclick="failChallenge(${player.id})">💀 FAIL (${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : ''})</button>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-function prevPlayer() {
-    if (players.length === 0) return;
-    currentPlayerIndex = (currentPlayerIndex - 1 + players.length) % players.length;
-    updatePlayerUI();
-    generateChallenge();
+function renderAllPlayers() {
+    playersGrid.innerHTML = players.map(p => renderPlayerCard(p)).join('');
 }
 
+// Player Management
 function addPlayer() {
     if (players.length >= 5) {
         showNotification("Maximum 5 players reached!", "fail");
         return;
     }
-    const newId = Math.max(...players.map(p => p.id), 0) + 1;
-    players.push({ id: newId, name: `Player ${newId}`, score: 0 });
-    if (players.length === 1) currentPlayerIndex = 0;
-    updatePlayerUI();
-    showNotification(`➕ Added Player ${newId}`);
+    const newPlayer = {
+        id: nextPlayerId++,
+        name: `SURVIVOR ${nextPlayerId - 1}`,
+        score: 0,
+        currentChallenge: null
+    };
+    players.push(newPlayer);
+    generateChallengeForPlayer(newPlayer);
+    renderAllPlayers();
+    showNotification(`➕ Added ${newPlayer.name}`);
 }
 
-function removePlayer() {
+window.removePlayer = function(playerId) {
     if (players.length <= 1) {
         showNotification("Cannot remove last player!", "fail");
         return;
     }
-    const removed = players.splice(currentPlayerIndex, 1)[0];
-    if (currentPlayerIndex >= players.length) currentPlayerIndex = players.length - 1;
-    updatePlayerUI();
+    const removed = players.find(p => p.id === playerId);
+    players = players.filter(p => p.id !== playerId);
+    renderAllPlayers();
     showNotification(`➖ Removed ${removed.name}`);
-    generateChallenge();
+};
+
+window.completeChallenge = function(playerId) {
+    const player = players.find(p => p.id === playerId);
+    if (!player || !player.currentChallenge) return;
+    
+    const points = player.currentChallenge.points;
+    player.score += points;
+    
+    addToHistory({
+        timestamp: new Date().toLocaleTimeString(),
+        playerName: player.name,
+        challenge: player.currentChallenge.title,
+        points: points,
+        result: 'COMPLETED'
+    });
+    
+    showNotification(`✅ ${player.name} +${points} points!`);
+    generateChallengeForPlayer(player);
+    renderAllPlayers();
+};
+
+window.failChallenge = function(playerId) {
+    const player = players.find(p => p.id === playerId);
+    if (!player || !player.currentChallenge) return;
+    
+    const diff = difficultyConfig[player.currentChallenge.difficulty];
+    const shots = diff.failShots;
+    
+    if (currentMode === 'drinking') {
+        showNotification(`🍺 ${player.name} must take ${shots} SHOT${shots > 1 ? 'S' : '!'} 🍺`, "fail");
+    }
+    
+    addToHistory({
+        timestamp: new Date().toLocaleTimeString(),
+        playerName: player.name,
+        challenge: player.currentChallenge.title,
+        points: 0,
+        result: 'FAILED'
+    });
+    
+    generateChallengeForPlayer(player);
+    renderAllPlayers();
+};
+
+function regenerateAllChallenges() {
+    players.forEach(player => {
+        generateChallengeForPlayer(player);
+    });
+    renderAllPlayers();
+    showNotification("🎲 New challenges for all players!");
 }
 
-// ==================== EVENT LISTENERS ====================
-generateBtn.addEventListener('click', generateChallenge);
-completeBtn.addEventListener('click', completeChallenge);
-failBtn.addEventListener('click', failChallenge);
-clearHistoryBtn.addEventListener('click', () => {
-    document.getElementById('historyList').innerHTML = '';
-});
-
-roleFilter.addEventListener('change', generateChallenge);
-difficultyFilter.addEventListener('change', generateChallenge);
-
-// Mode buttons
-document.querySelectorAll('.mode-btn-small').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.mode-btn-small').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentMode = btn.dataset.mode;
-        generateChallenge();
-    });
-});
-
-// Player controls
-prevPlayerBtn.addEventListener('click', prevPlayer);
-nextPlayerBtn.addEventListener('click', nextPlayer);
+// Event Listeners
+globalGenerateBtn.addEventListener('click', regenerateAllChallenges);
 addPlayerBtn.addEventListener('click', addPlayer);
-removePlayerBtn.addEventListener('click', removePlayer);
-
-// Keyboard shortcuts
-document.addEventListener('keypress', (e) => {
-    if (e.code === 'Space' || e.key === ' ') {
-        e.preventDefault();
-        generateChallenge();
-    }
-    if (e.key === 'c' || e.key === 'C') {
-        completeChallenge();
-    }
-    if (e.key === 'f' || e.key === 'F') {
-        failChallenge();
-    }
+clearHistoryBtn.addEventListener('click', () => {
+    globalHistory = [];
+    updateHistoryDisplay();
+    showNotification("History cleared!");
 });
 
-// Initial load
-generateChallenge();
-updatePlayerUI();
+roleFilter.addEventListener('change', () => {
+   
