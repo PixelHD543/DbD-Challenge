@@ -3,23 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bead by Daylight - Challenge Generator</title>
+    <title>Dead by Daylight - Challenge Generator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔮 BEAD BY DAYLIGHT 🍻</h1>
-            <p class="subtitle">Random Challenges & Drinking Game</p>
+            <h1>🔮 DEAD BY DAYLIGHT 🍻</h1>
+            <p class="subtitle">Random Challenges & Drinking Game | Multi-Player Tracker</p>
         </header>
-<div class="challenge-meta">
-    <span class="difficulty-badge" id="difficultyBadge">⭐⭐ Medium ⭐⭐</span>
-</div>
-        <div class="mode-selector">
-            <button class="mode-btn active" data-mode="normal">🎯 Normal Mode</button>
-            <button class="mode-btn" data-mode="drinking">🍺 Drinking Mode</button>
+
+        <!-- Filters Row -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label>🎮 Role:</label>
+                <select id="roleFilter">
+                    <option value="mixed">Mixed (Survivor/Killer)</option>
+                    <option value="survivor">Survivor Only</option>
+                    <option value="killer">Killer Only</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>⭐ Difficulty:</label>
+                <select id="difficultyFilter">
+                    <option value="all">All Difficulties</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="extreme">Extreme</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>🍺 Mode:</label>
+                <div class="mode-buttons">
+                    <button class="mode-btn-small" data-mode="normal">Normal</button>
+                    <button class="mode-btn-small active" data-mode="drinking">Drinking</button>
+                </div>
+            </div>
         </div>
 
+        <!-- Player Tracker -->
+        <div class="player-tracker">
+            <div class="player-selector">
+                <button id="prevPlayerBtn" class="player-nav">◀</button>
+                <div class="player-info">
+                    <span class="player-label">Player</span>
+                    <span class="player-number" id="currentPlayerNum">1</span>
+                    <span class="player-name" id="currentPlayerName">Player 1</span>
+                </div>
+                <button id="nextPlayerBtn" class="player-nav">▶</button>
+                <button id="addPlayerBtn" class="player-action">+ Add Player</button>
+                <button id="removePlayerBtn" class="player-action danger">- Remove</button>
+            </div>
+            <div class="player-score">
+                <span>🏆 Score:</span>
+                <span id="currentPlayerScore">0</span>
+                <span>pts</span>
+            </div>
+        </div>
+
+        <!-- Challenge Card -->
         <div class="challenge-card" id="challengeCard">
             <div class="role-badge" id="roleBadge">SURVIVOR</div>
             
@@ -27,28 +70,30 @@
                 <h2 id="challengeTitle">Click to Generate</h2>
                 <p id="challengeDescription">Press the button below for a random challenge</p>
                 
+                <div class="challenge-meta">
+                    <span class="difficulty-badge" id="difficultyBadge">⭐⭐ Medium ⭐⭐</span>
+                </div>
+                
                 <div class="build-section" id="buildSection">
                     <h3>🎭 Random Build</h3>
                     <div class="perks" id="perksList"></div>
                     <div class="items" id="itemsList"></div>
                 </div>
 
-                <div class="drinking-rules" id="drinkingRules" style="display:none;">
+                <div class="drinking-rules" id="drinkingRules">
                     <h3>🍻 DRINKING RULES 🍻</h3>
+                    <p class="drinking-note">💀 <strong>FAILURE PENALTY:</strong> <span id="failurePenalty">Easy=3 shots, Hard=1 shot</span> 💀</p>
                     <ul id="drinkList"></ul>
                 </div>
             </div>
 
-            <button class="generate-btn" id="generateBtn">🎲 GENERATE CHALLENGE 🎲</button>
+            <div class="action-buttons">
+                <button class="generate-btn" id="generateBtn">🎲 GENERATE CHALLENGE 🎲</button>
+                <button class="complete-btn" id="completeChallengeBtn">✓ COMPLETE CHALLENGE (+pts)</button>
+                <button class="fail-btn" id="failChallengeBtn">💀 FAIL CHALLENGE (Drink!) 💀</button>
+            </div>
         </div>
-<div class="points-system">
-    <div class="points-card">
-        <span class="points-label">🏆 TOTAL POINTS</span>
-        <span class="points-value" id="pointsTotal">0</span>
-        <button id="completeChallengeBtn" class="complete-btn">✓ Complete Challenge</button>
-        <small>Press 'C' to complete current challenge</small>
-    </div>
-</div>
+
         <div class="history-section">
             <h3>📜 Recent Challenges</h3>
             <ul id="historyList"></ul>
