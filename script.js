@@ -286,4 +286,177 @@ function renderPlayerCard(player, index) {
     ` : '';
     
     const perksHTML = challenge.build.perks.map(perk => {
-        const imgPath = getPerkImagePath(perk, challenge.isSurviv
+        const imgPath = getPerkImagePath(perk, challenge.isSurvivor);
+        return `
+            <div class="perk-item">
+                <img src="${imgPath}" class="perk-icon-large" alt="${perk}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="perk-name">${perk}</span>
+            </div>
+        `;
+    }).join('');
+    
+    const itemsHTML = challenge.isSurvivor ? challenge.build.items.map(item => {
+        const imgPath = getItemImagePath(item);
+        return `
+            <div class="perk-item">
+                <img src="${imgPath}" class="perk-icon-large" alt="${item}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="perk-name">${item}</span>
+            </div>
+        `;
+    }).join('') : '<div class="perk-item"><span class="perk-name">🔪 Killer Add-ons (Mori / Offerings)</span></div>';
+    
+    const drinkingHTML = currentMode === 'drinking' ? `
+        <div class="drinking-rules">
+            <h4>🍺 DRINKING RULES</h4>
+            <ul>${drinkingRules[challenge.isSurvivor ? 'survivor' : 'killer'].slice(0, 3).map(r => `<li>${r}</li>`).join('')}</ul>
+            <div class="fail-penalty">💀 FAIL PENALTY: ${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : ''}</div>
+        </div>
+    ` : '';
+    
+    const slotClass = isKillerSlot ? 'player-card killer-slot' : 'player-card';
+    
+    return `
+        <div class="${slotClass}" data-player-id="${player.id}">
+            <div class="player-header">
+                <div class="player-name-section">
+                    <div class="player-avatar">${isKillerSlot ? '🔪' : '🔦'}</div>
+                    <div class="player-name">${player.name}</div>
+                    <span class="role-badge ${roleClass}">${roleText}</span>
+                </div>
+                <div class="player-score">🏆 ${player.score}</div>
+                ${!isKillerSlot && players.length > 1 ? `<button class="remove-player-btn" onclick="removePlayer(${player.id})">🗑️</button>` : ''}
+                ${isKillerSlot ? '<span class="custom-slot-badge">CUSTOM MATCH</span>' : ''}
+            </div>
+            
+            <div class="challenge-area">
+                ${killerPortraitHTML}
+                <div class="challenge-title">${challenge.title}</div>
+                <div class="challenge-desc">${challenge.desc}</div>
+                <span class="difficulty" style="background: ${diff.color}">${diff.icon} ${diff.name}</span>
+                
+                <div class="build-section">
+                    <h4>🎭 PERKS (${challenge.isSurvivor ? 'Survivor' : 'Killer'})</h4>
+                    <div class="perks-grid">${perksHTML}</div>
+                    <h4>📦 ${challenge.isSurvivor ? 'ITEMS & ADD-ONS' : 'OFFERINGS'}</h4>
+                    <div class="items-grid">${itemsHTML}</div>
+                </div>
+                
+                ${drinkingHTML}
+                
+                <div class="challenge-actions">
+                    <button class="btn-pass" onclick="completeChallenge(${player.id})">✓ PASS (+${challenge.points})</button>
+                    <button class="btn-fail" onclick="failChallenge(${player.id})">💀 FAIL</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderAllPlayers() {
+    playersGrid.innerHTML = players.map((p, i) => renderPlayerCard(p, i)).join('');
+}
+
+function addPlayer() {
+    if (players.length >= 5) {
+        showNotification("Maximum 5 players reached! (4 Survivors + 1 Killer Slot)", "fail");
+        return;
+    }
+    const isKillerSlot = (players.length === 4);
+    const newPlayer = {
+        id: nextPlayerId++,
+        name: isKillerSlot ? "KILLER SLOT" : `SURVIVOR ${players.length + 1}`,
+        score: 0,
+        currentChallenge: null
+    };
+    players.push(newPlayer);
+    generateChallengeForPlayer(newPlayer, isKillerSlot);
+    renderAllPlayers();
+    showNotification(`➕ Added ${newPlayer.name}`, "success");
+}
+
+window.removePlayer = function(playerId) {
+    if (players.length <= 1) {
+        showNotification("Cannot remove last player!", "fail");
+        return;
+    }
+    const index = players.findIndex(p => p.id === playerId);
+    if (index === 4) {
+        showNotification("Cannot remove the 5th Killer Slot! Remove survivor slots first.", "fail");
+        return;
+    }
+    const removed = players.splice(index, 1)[0];
+    renderAllPlayers();
+    showNotification(`➖ Removed ${removed.name}`, "success");
+};
+
+window.completeChallenge = function(playerId) {
+    const player = players.find(p => p.id === playerId);
+    if (!player || !player.currentChallenge) return;
+    player.score += player.currentChallenge.points;
+    addToHistory({
+        timestamp: new Date().toLocaleTimeString(),
+        playerName: player.name,
+        challenge: player.currentChallenge.title,
+        points: player.currentChallenge.points,
+        result: 'COMPLETED'
+    });
+    showNotification(`✅ ${player.name} +${player.currentChallenge.points} points!`, "success");
+    const isKillerSlot = players.findIndex(p => p.id === playerId) === 4;
+    generateChallengeForPlayer(player, isKillerSlot);
+    renderAllPlayers();
+};
+
+window.failChallenge = function(playerId) {
+    const player = players.find(p => p.id === playerId);
+    if (!player || !player.currentChallenge) return;
+    const diff = difficultyConfig[player.currentChallenge.difficulty];
+    if (currentMode === 'drinking') {
+        showNotification(`🍺 ${player.name} must take ${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : '!'} 🍺`, "fail");
+    }
+    addToHistory({
+        timestamp: new Date().toLocaleTimeString(),
+        playerName: player.name,
+        challenge: player.currentChallenge.title,
+        points: 0,
+        result: 'FAILED'
+    });
+    const isKillerSlot = players.findIndex(p => p.id === playerId) === 4;
+    generateChallengeForPlayer(player, isKillerSlot);
+    renderAllPlayers();
+};
+
+function regenerateAllChallenges() {
+    players.forEach((player, i) => generateChallengeForPlayer(player, i === 4));
+    renderAllPlayers();
+    showNotification("🎲 New challenges for all players!", "success");
+}
+
+// Event Listeners
+globalGenerateBtn.addEventListener('click', regenerateAllChallenges);
+addPlayerBtn.addEventListener('click', addPlayer);
+clearHistoryBtn.addEventListener('click', () => { 
+    globalHistory = []; 
+    historyList.innerHTML = '';
+    showNotification("History cleared!", "success");
+});
+roleFilter.addEventListener('change', () => regenerateAllChallenges());
+difficultyFilter.addEventListener('click', () => regenerateAllChallenges());
+
+document.querySelectorAll('.mode-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMode = btn.dataset.mode;
+        regenerateAllChallenges();
+        showNotification(`🍺 Mode: ${currentMode.toUpperCase()}`, "success");
+    });
+});
+
+// Initialize with 3 survivor slots (room for 2 more including killer slot)
+players.push({ id: nextPlayerId++, name: "SURVIVOR 1", score: 0, currentChallenge: null });
+players.push({ id: nextPlayerId++, name: "SURVIVOR 2", score: 0, currentChallenge: null });
+players.push({ id: nextPlayerId++, name: "SURVIVOR 3", score: 0, currentChallenge: null });
+players.forEach((p, i) => generateChallengeForPlayer(p, false));
+renderAllPlayers();
