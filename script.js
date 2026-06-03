@@ -8,60 +8,166 @@ const survivors = {
         "Circle of Healing", "Off the Record", "Built to Last", "Flashbang"
     ],
     items: [
-        "Medkit", "Toolbox", "Map", "Rainbow Map", "Ranger's Aid Kit", "Broken Key"
+        "Medkit", "Toolbox", "Flashlight", "Map", "Key", "Firecracker"
     ]
 };
 
-const killers = {
-    perks: [
-        "NOED", "Pop Goes the Weasel", "Barbecue & Chili", "Ruin", 
-        "Corrupt Intervention", "Save the Best for Last", "Enduring", 
-        "Spirit Fury", "Infectious Fright", "Make Your Choice", 
-        "Devour Hope", "Undying", "Tinkerer", "Discordance",
-        "Lethal Pursuer", "Pain Resonance", "Deadlock", "No Way Out"
-    ],
-    items: [
-        "Mori (Ebony)", "Add-ons (Ultra Rare)", "Iridescent Add-ons",
-        "Offering (Map)", "Offering (Bloodpoints)", "Offering (Survivor Pudding)"
-    ]
+const killersList = [
+    "The Trapper", "The Wraith", "The Hillbilly", "The Nurse", "The Hag",
+    "The Shape", "The Doctor", "The Huntress", "The Cannibal", "The Nightmare",
+    "The Pig", "The Clown", "The Spirit", "The Legion", "The Plague",
+    "The Ghostface", "The Demogorgon", "The Oni", "The Deathslinger", "The Executioner",
+    "The Blight", "The Twins", "The Trickster", "The Nemesis", "The Cenobite",
+    "The Artist", "The Onryo", "The Dredge", "The MasterMind", "The Knight",
+    "The Skull Merchant", "The Singularity", "The Xenomorph", "The Unknown", "The Lich",
+    "The Dracula", "The Houndmaster", "The Ghoul"
+];
+
+const killerPerks = [
+    "NOED", "Pop Goes the Weasel", "Barbecue & Chili", "Ruin", 
+    "Corrupt Intervention", "Save the Best for Last", "Enduring", 
+    "Spirit Fury", "Infectious Fright", "Make Your Choice", 
+    "Devour Hope", "Undying", "Tinkerer", "Discordance",
+    "Lethal Pursuer", "Pain Resonance", "Deadlock", "No Way Out"
+];
+
+// ==================== FULL IMAGE MAPPING ====================
+const survivorPerkMap = {
+    "Dead Hard": "iconPerks_DeadHard.png",
+    "Borrowed Time": "iconPerks_BorrowedTime.png",
+    "Decisive Strike": "iconPerks_DecisiveStrike.png",
+    "Sprint Burst": "iconPerks_SprintBurst.png",
+    "Unbreakable": "iconPerks_Unbreakable.png",
+    "Iron Will": "iconPerks_IronWill.png",
+    "Prove Thyself": "iconPerks_ProveThyself.png",
+    "Adrenaline": "iconPerks_Adrenaline.png",
+    "Windows of Opportunity": "iconPerks_WindowsOfOpportunity.png",
+    "Lithe": "iconPerks_Lithe.png",
+    "Dance With Me": "iconPerks_DanceWithMe.png",
+    "Head On": "iconPerks_HeadOn.png",
+    "Bond": "iconPerks_Bond.png",
+    "Empathy": "iconPerks_Empathy.png",
+    "We'll Make It": "iconPerks_WellMakelt.png",
+    "Botany Knowledge": "iconPerks_BotanyKnowledge.png",
+    "Circle of Healing": "iconPerks_BoonCircleOfHealing.png",
+    "Off the Record": "iconPerks_OffTheRecord.png",
+    "Built to Last": "iconPerks_BuiltToLast.png",
+    "Flashbang": "iconPerks_Flashbang.png"
 };
 
+const killerPerkMap = {
+    "NOED": "iconPerks_NoOneEscapesDeath.png",
+    "Pop Goes the Weasel": "iconPerks_PopGoesTheWeasel.png",
+    "Barbecue & Chili": "iconPerks_BBQAndChili.png",
+    "Ruin": "iconPerks_Ruin.png",
+    "Corrupt Intervention": "iconPerks_CorruptIntervention.png",
+    "Save the Best for Last": "iconPerks_SaveTheBestForLast.png",
+    "Enduring": "iconPerks_Enduring.png",
+    "Spirit Fury": "iconPerks_SpiritFury.png",
+    "Infectious Fright": "iconPerks_InfectiousFright.png",
+    "Make Your Choice": "iconPerks_MakeYourChoice.png",
+    "Devour Hope": "iconPerks_DevourHope.png",
+    "Undying": "iconPerks_HexUndying.png",
+    "Tinkerer": "iconPerks_Tinkerer.png",
+    "Discordance": "iconPerks_Discordance.png",
+    "Lethal Pursuer": "iconPerks_LethalPursuer.png",
+    "Pain Resonance": "T_iconPerks_PainResonance.png",
+    "Deadlock": "iconPerks_Deadlock.png",
+    "No Way Out": "iconPerks_NoWayOut.png"
+};
+
+const itemMap = {
+    "Medkit": "iconltems_medkit.png",
+    "Toolbox": "iconltems_toolbox.png",
+    "Flashlight": "iconltems_flashlight.png",
+    "Map": "iconltems_map.png",
+    "Key": "iconltems_key.png",
+    "Firecracker": "iconltems_chineseFirecracker.png"
+};
+
+function getKillerPortrait(killerName) {
+    const portraitMap = {
+        "The Trapper": "K01_TheTrapper_Portrait.png",
+        "The Wraith": "K02_TheWraith_Portrait.png",
+        "The Hillbilly": "K03_TheHillbilly_Portrait.png",
+        "The Nurse": "K04_TheNurse_Portrait.png",
+        "The Hag": "K05_TheHag_Portrait.png",
+        "The Shape": "K06_TheShape_Portrait.png",
+        "The Doctor": "K07_TheDoctor_Portrait.png",
+        "The Huntress": "K08_TheHuntress_Portrait.png",
+        "The Cannibal": "K09_TheCannibal_Portrait.png",
+        "The Nightmare": "K10_TheNightmare_Portrait.png",
+        "The Pig": "K11_ThePig_Portrait.png",
+        "The Clown": "K12_TheClown_Portrait.png",
+        "The Spirit": "K13_TheSpirit_Portrait.png",
+        "The Legion": "K14_TheLegion_Portrait.png",
+        "The Plague": "K15_ThePlague_Portrait.png",
+        "The Ghostface": "K16_TheGhostface_Portrait.png",
+        "The Demogorgon": "K17_TheDemogorgon_Portrait.png",
+        "The Oni": "K18_TheOni_Portrait.png",
+        "The Deathslinger": "K19_TheDeathslinger_Portrait.png",
+        "The Executioner": "K20_TheExecutioner_Portrait.png",
+        "The Blight": "K21_TheBlight_Portrait.png",
+        "The Twins": "K22_TheTwins_Portrait.png",
+        "The Trickster": "K23_TheTrickster_Portrait.png",
+        "The Nemesis": "K24_TheNemesis_Portrait.png",
+        "The Cenobite": "K25_TheCenobite_Portrait.png",
+        "The Artist": "K26_TheArtist_Portrait.png",
+        "The Onryo": "K27_TheOnryo_Portrait.png",
+        "The Dredge": "K28_TheDredge_Portrait.png",
+        "The MasterMind": "K29_TheMasterMind_Portrait.png",
+        "The Knight": "K30_TheKnight_Portrait.png",
+        "The Skull Merchant": "K31_TheSkullMerchant_Portrait.png",
+        "The Singularity": "K32_TheSingularity_Portrait.png",
+        "The Xenomorph": "K33_TheXenomorph_Portrait.png",
+        "The Unknown": "K35_TheUnknown_Portrait.png",
+        "The Lich": "K36_TheLich_Portrait.png",
+        "The Dracula": "K37_TheDracula_Portrait.png",
+        "The Houndmaster": "K38_TheHoundmaster_Portrait.png",
+        "The Ghoul": "K39_TheGhoul_Portrait.png"
+    };
+    return `images/killers/${portraitMap[killerName] || "K01_TheTrapper_Portrait.png"}`;
+}
+
+function getPerkImagePath(perkName, isSurvivor) {
+    const map = isSurvivor ? survivorPerkMap : killerPerkMap;
+    let filename = map[perkName];
+    if (!filename) {
+        filename = perkName.replace(/\s/g, '') + ".png";
+    }
+    const folder = isSurvivor ? 'perks_survivor' : 'perks_killer';
+    return `images/${folder}/${filename}`;
+}
+
+function getItemImagePath(itemName) {
+    const filename = itemMap[itemName] || "iconltems_toolbox.png";
+    return `images/items/${filename}`;
+}
+
+// ==================== CHALLENGES DATA ====================
 const challenges = {
     survivor: [
         { title: "Altruism Guardian", desc: "Safe unhook 3 survivors before any generators are completed", difficulty: "hard", points: 50 },
         { title: "Stealth Master", desc: "Complete 1 full generator without being detected by the killer", difficulty: "medium", points: 30 },
         { title: "Loop King", desc: "Keep the killer in a chase for 90 seconds without being hit", difficulty: "hard", points: 50 },
         { title: "Gen Jockey", desc: "Repair 3 generators solo in a single match", difficulty: "medium", points: 35 },
-        { title: "Sabo Squad", desc: "Sabotage 3 hooks before the killer can use them", difficulty: "hard", points: 50 },
         { title: "Flashlight Savior", desc: "Blind the killer while they're carrying a survivor", difficulty: "extreme", points: 75 },
-        { title: "Exit Gate Hero", desc: "Open the exit gate and wait for all survivors to escape before leaving", difficulty: "medium", points: 30 },
         { title: "No Mither Warrior", desc: "Escape without being healed once", difficulty: "extreme", points: 100 },
-        { title: "Chest Goblin", desc: "Open 3 chests in a single match", difficulty: "easy", points: 15 },
         { title: "Totem Hunter", desc: "Cleanse 3 totems before any generators are completed", difficulty: "medium", points: 35 },
-        { title: "Body Blocker", desc: "Take a protection hit that would have downed a teammate", difficulty: "hard", points: 50 },
-        { title: "Houdini", desc: "Escape the killer's grasp twice in one chase", difficulty: "extreme", points: 80 },
         { title: "Medic", desc: "Heal 4 health states on other survivors", difficulty: "easy", points: 20 },
-        { title: "Distraction", desc: "Get the killer to chase you for 3 generators worth of time", difficulty: "hard", points: 55 },
-        { title: "Sole Survivor", desc: "Be the last survivor and escape through the exit gate (not hatch)", difficulty: "extreme", points: 100 },
+        { title: "Sole Survivor", desc: "Be the last survivor and escape through the exit gate", difficulty: "extreme", points: 100 },
         { title: "Boon Buddy", desc: "Bless a hex totem and have teammates use it 3 times", difficulty: "medium", points: 40 }
     ],
     killer: [
         { title: "Mori Master", desc: "Mori all 4 survivors in a single match", difficulty: "extreme", points: 100 },
         { title: "Gen Patrol", desc: "Damage 10 generators in one match", difficulty: "medium", points: 35 },
         { title: "3-Gen God", desc: "Defend a 3-gen situation for 10 minutes and win", difficulty: "hard", points: 60 },
-        { title: "Hook Hugger", desc: "Hook each survivor twice before sacrificing anyone", difficulty: "hard", points: 55 },
         { title: "Stealth Assassin", desc: "Get 4 grabs off survivors without entering chase", difficulty: "extreme", points: 85 },
-        { title: "End Game Nightmare", desc: "Sacrifice 2 survivors after gates are powered", difficulty: "hard", points: 50 },
         { title: "Perkless Wonder", desc: "Get a 4k without using any perks", difficulty: "extreme", points: 100 },
-        { title: "Hatch Denier", desc: "Close the hatch and sacrifice the last survivor", difficulty: "medium", points: 40 },
         { title: "Basement Party", desc: "Sacrifice 2 survivors in the basement", difficulty: "easy", points: 20 },
-        { title: "Pallet Eater", desc: "Break 8 pallets in a single match", difficulty: "easy", points: 15 },
-        { title: "Tunnel Vision", desc: "Sacrifice the obsession before any other survivor", difficulty: "medium", points: 30 },
         { title: "Hex Guardian", desc: "Defend your hex totem and get 2 kills before it's cleansed", difficulty: "hard", points: 50 },
         { title: "Merciless", desc: "Get a 4k with at least 8 hook stages", difficulty: "hard", points: 60 },
-        { title: "Jump Scare", desc: "Hit a survivor within 5 seconds of exiting stealth", difficulty: "medium", points: 35 },
-        { title: "Slug Race", desc: "Down all 4 survivors at once (no hooks)", difficulty: "extreme", points: 90 },
-        { title: "Sweatshop", desc: "Get 12 unique hook actions before gates open", difficulty: "hard", points: 65 }
+        { title: "Slug Race", desc: "Down all 4 survivors at once (no hooks)", difficulty: "extreme", points: 90 }
     ]
 };
 
@@ -75,63 +181,17 @@ const difficultyConfig = {
 const drinkingRules = {
     survivor: [
         "Take a sip when you miss a skill check",
-        "Take a drink when you get hooked for the first time",
-        "Take a sip when the killer finds you in a locker",
+        "Take a drink when you get hooked",
         "Everyone drinks when the killer gets a 4k",
-        "Take a sip when you sandbag a teammate",
-        "Take a drink for every gen that pops while in chase"
+        "Take a sip when you sandbag a teammate"
     ],
     killer: [
-        "Take a sip when a survivor teabags at a pallet",
-        "Take a drink when you lose a survivor in a chase",
+        "Take a sip when a survivor teabags",
+        "Take a drink when you lose a chase",
         "Everyone drinks when a survivor flashlight saves",
-        "Take a sip when you get gen rushed",
-        "Take a drink for every DS/Dead Hard you eat",
         "Everyone cheers when you get a 4k"
     ]
 };
-
-// ==================== IMAGE MAPPING ====================
-function getPerkImagePath(perkName, isSurvivor) {
-    // Map common perk names to your actual filenames
-    const perkMap = {
-        "Dead Hard": "IconPerks_GeneticLimits.png", // Using available image
-        "Borrowed Time": "IconPerks_scavenger.png",
-        "Sprint Burst": "IconPerks_troubleshooter.png",
-        "Circle of Healing": "T_UI_iconPerks_AllShakingThunder.png",
-        "Unbreakable": "T_UI_iconPerks_ApocalypticIngenuity.png",
-        "Windows of Opportunity": "T_UI_iconPerks_ComeAndGetMe.png",
-        "Lithe": "T_UI_iconPerks_Conviction.png",
-        "Adrenaline": "T_UI_iconPerks_LastStand.png",
-        "NOED": "IconPerks_ForcedHesitation.png",
-        "Pop Goes the Weasel": "T_UI_iconPerks_ForeverEntwined.png",
-        "Ruin": "T_UI_iconPerks_HexOvertureOfDoom.png"
-    };
-    
-    let filename = perkMap[perkName];
-    if (!filename) {
-        // Fallback: try to generate filename
-        filename = `IconPerks_${perkName.replace(/\s/g, '')}.png`;
-    }
-    
-    const folder = isSurvivor ? 'perks_survivor' : 'perks_killer';
-    return `images/${folder}/${filename}`;
-}
-
-function getItemImagePath(itemName) {
-    const itemMap = {
-        "Medkit": "iconltems_medkit.png",
-        "Toolbox": "iconltems_toolbox.png",
-        "Map": "iconltems_map.png",
-        "Rainbow Map": "iconltems_rainbowMap.png",
-        "Ranger's Aid Kit": "iconltems_rangersAidKit.png",
-        "Broken Key": "iconltems_rundownAidKit.png"
-    };
-    
-    let filename = itemMap[itemName];
-    if (!filename) filename = "iconltems_toolbox.png";
-    return `images/items/${filename}`;
-}
 
 // ==================== PLAYER SYSTEM ====================
 let players = [];
@@ -148,63 +208,62 @@ const addPlayerBtn = document.getElementById('addPlayerBtn');
 const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 const historyList = document.getElementById('historyList');
 
-// Helper Functions
-function getRandomItem(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-}
+function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-function getFilteredChallenges() {
-    const role = roleFilter.value;
-    const difficulty = difficultyFilter.value;
-    
-    let pool = [];
-    if (role === "survivor") pool = [...challenges.survivor];
-    else if (role === "killer") pool = [...challenges.killer];
-    else pool = [...challenges.survivor, ...challenges.killer];
-    
-    if (difficulty !== "all") {
-        pool = pool.filter(c => c.difficulty === difficulty);
-    }
-    
-    return pool.length ? pool : [...challenges.survivor, ...challenges.killer];
-}
+function getRandomKiller() { return getRandomItem(killersList); }
 
-function getRandomBuild(role) {
-    const data = role === 'survivor' ? survivors : killers;
+function getRandomBuild(isSurvivor) {
     const perks = [];
     const items = [];
+    const perkPool = isSurvivor ? survivors.perks : killerPerks;
     
     while(perks.length < 4) {
-        const perk = getRandomItem(data.perks);
+        const perk = getRandomItem(perkPool);
         if(!perks.includes(perk)) perks.push(perk);
     }
     
-    for(let i = 0; i < 2; i++) {
-        items.push(getRandomItem(data.items));
+    if(isSurvivor) {
+        for(let i = 0; i < 2; i++) items.push(getRandomItem(survivors.items));
     }
     
     return { perks, items };
 }
 
-function generateChallengeForPlayer(player) {
+function getFilteredChallenges() {
+    const role = roleFilter.value;
+    const difficulty = difficultyFilter.value;
+    let pool = [];
+    if (role === "survivor") pool = [...challenges.survivor];
+    else if (role === "killer") pool = [...challenges.killer];
+    else pool = [...challenges.survivor, ...challenges.killer];
+    if (difficulty !== "all") pool = pool.filter(c => c.difficulty === difficulty);
+    return pool.length ? pool : [...challenges.survivor, ...challenges.killer];
+}
+
+function generateChallengeForPlayer(player, isKillerSlot = false) {
     const pool = getFilteredChallenges();
-    const challenge = getRandomItem(pool);
-    const isSurvivor = challenges.survivor.includes(challenge);
-    const build = getRandomBuild(isSurvivor ? 'survivor' : 'killer');
+    let challenge, isSurvivor;
     
-    player.currentChallenge = { ...challenge, isSurvivor, build };
+    if (isKillerSlot) {
+        challenge = getRandomItem(challenges.killer);
+        isSurvivor = false;
+    } else {
+        challenge = getRandomItem(pool);
+        isSurvivor = challenges.survivor.includes(challenge);
+    }
+    
+    const build = getRandomBuild(isSurvivor);
+    const killerName = !isSurvivor ? getRandomKiller() : null;
+    
+    player.currentChallenge = { ...challenge, isSurvivor, build, killerName };
     return player.currentChallenge;
 }
 
 function addToHistory(entry) {
     globalHistory.unshift(entry);
     if (globalHistory.length > 20) globalHistory.pop();
-    updateHistoryDisplay();
-}
-
-function updateHistoryDisplay() {
-    historyList.innerHTML = globalHistory.map(entry => 
-        `<li>[${entry.timestamp}] ${entry.playerName} - ${entry.challenge} ${entry.result === 'FAILED' ? '💀 FAILED 💀' : `✅ +${entry.points}pts`}</li>`
+    historyList.innerHTML = globalHistory.map(e => 
+        `<li>[${e.timestamp}] ${e.playerName} - ${e.challenge} ${e.result === 'FAILED' ? '💀 FAILED' : `✅ +${e.points}pts`}</li>`
     ).join('');
 }
 
@@ -216,90 +275,85 @@ function showNotification(message, type = "success") {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// Player Card Rendering
-function createDrinkingRulesHTML(role) {
-    if (currentMode !== 'drinking') return '';
-    const rules = drinkingRules[role];
-    const selectedRules = [];
-    for(let i = 0; i < 2; i++) {
-        selectedRules.push(getRandomItem(rules));
-    }
-    return `
-        <div class="drinking-rules">
-            <h4>🍺 DRINKING RULES (This Challenge)</h4>
-            <ul>
-                ${selectedRules.map(rule => `<li>${rule}</li>`).join('')}
-            </ul>
-        </div>
-    `;
-}
-
-function renderPlayerCard(player) {
-    if (!player.currentChallenge) {
-        generateChallengeForPlayer(player);
-    }
+function renderPlayerCard(player, index) {
+    if (!player.currentChallenge) generateChallengeForPlayer(player, index === 4);
     
     const challenge = player.currentChallenge;
     const diff = difficultyConfig[challenge.difficulty];
+    const isKillerSlot = (index === 4);
     const roleClass = challenge.isSurvivor ? 'survivor-badge' : 'killer-badge';
     const roleText = challenge.isSurvivor ? 'SURVIVOR' : 'KILLER';
     
-    // Build perks HTML with images
+    // Killer portrait for 5th slot
+    const killerPortraitHTML = (!challenge.isSurvivor && challenge.killerName) ? `
+        <div class="killer-portrait">
+            <img src="${getKillerPortrait(challenge.killerName)}" alt="${challenge.killerName}" class="killer-img">
+            <span class="killer-name">${challenge.killerName}</span>
+        </div>
+    ` : '';
+    
     const perksHTML = challenge.build.perks.map(perk => {
         const imgPath = getPerkImagePath(perk, challenge.isSurvivor);
         return `
             <div class="perk-item">
-                <img src="${imgPath}" class="perk-icon" alt="${perk}" 
+                <img src="${imgPath}" class="perk-icon-large" alt="${perk}" 
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span style="display:none;">✨</span>
-                <span>${perk}</span>
+                <span class="perk-name">${perk}</span>
             </div>
         `;
     }).join('');
     
-    const itemsHTML = challenge.build.items.map(item => {
+    const itemsHTML = challenge.isSurvivor ? challenge.build.items.map(item => {
         const imgPath = getItemImagePath(item);
         return `
             <div class="perk-item">
-                <img src="${imgPath}" class="perk-icon" alt="${item}" 
+                <img src="${imgPath}" class="perk-icon-large" alt="${item}" 
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span style="display:none;">📦</span>
-                <span>${item}</span>
+                <span class="perk-name">${item}</span>
             </div>
         `;
-    }).join('');
+    }).join('') : '<div class="perk-item">🔪 Killer Add-ons</div>';
+    
+    const drinkingHTML = currentMode === 'drinking' ? `
+        <div class="drinking-rules">
+            <h4>🍺 DRINKING RULES</h4>
+            <ul>${drinkingRules[challenge.isSurvivor ? 'survivor' : 'killer'].slice(0,2).map(r => `<li>${r}</li>`).join('')}</ul>
+            <p class="fail-penalty">💀 FAIL: ${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : ''}</p>
+        </div>
+    ` : '';
+    
+    const slotClass = isKillerSlot ? 'player-card killer-slot' : 'player-card';
     
     return `
-        <div class="player-card" data-player-id="${player.id}">
+        <div class="${slotClass}" data-player-id="${player.id}">
             <div class="player-header">
                 <div class="player-name-section">
-                    <div class="player-avatar">🔪</div>
+                    <div class="player-avatar">${isKillerSlot ? '🔪' : '🔦'}</div>
                     <div class="player-name">${player.name}</div>
                     <span class="role-badge ${roleClass}">${roleText}</span>
                 </div>
-                <div class="player-score">
-                    <span>🏆</span> ${player.score}
-                </div>
-                <button class="remove-player-btn" onclick="removePlayer(${player.id})">🗑️</button>
+                <div class="player-score">🏆 ${player.score}</div>
+                ${!isKillerSlot ? `<button class="remove-player-btn" onclick="removePlayer(${player.id})">🗑️</button>` : '<span class="custom-slot-badge">CUSTOM</span>'}
             </div>
             
             <div class="challenge-area">
+                ${killerPortraitHTML}
                 <div class="challenge-title">${challenge.title}</div>
                 <div class="challenge-desc">${challenge.desc}</div>
-                <span class="difficulty" style="background: ${diff.color}">${diff.icon} ${diff.name} ${diff.icon}</span>
+                <span class="difficulty" style="background: ${diff.color}">${diff.icon} ${diff.name}</span>
                 
                 <div class="build-section">
-                    <h4>🎭 PERKS</h4>
+                    <h4>🎭 PERKS (${challenge.isSurvivor ? 'Survivor' : 'Killer'})</h4>
                     <div class="perks-grid">${perksHTML}</div>
-                    <h4>📦 ITEMS & ADD-ONS</h4>
+                    <h4>📦 ${challenge.isSurvivor ? 'ITEMS' : 'ADD-ONS'}</h4>
                     <div class="items-grid">${itemsHTML}</div>
                 </div>
                 
-                ${createDrinkingRulesHTML(challenge.isSurvivor ? 'survivor' : 'killer')}
+                ${drinkingHTML}
                 
                 <div class="challenge-actions">
                     <button class="btn-pass" onclick="completeChallenge(${player.id})">✓ PASS (+${challenge.points})</button>
-                    <button class="btn-fail" onclick="failChallenge(${player.id})">💀 FAIL (${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : ''})</button>
+                    <button class="btn-fail" onclick="failChallenge(${player.id})">💀 FAIL</button>
                 </div>
             </div>
         </div>
@@ -307,23 +361,23 @@ function renderPlayerCard(player) {
 }
 
 function renderAllPlayers() {
-    playersGrid.innerHTML = players.map(p => renderPlayerCard(p)).join('');
+    playersGrid.innerHTML = players.map((p, i) => renderPlayerCard(p, i)).join('');
 }
 
-// Player Management
 function addPlayer() {
     if (players.length >= 5) {
-        showNotification("Maximum 5 players reached!", "fail");
+        showNotification("Maximum 5 players reached! (4 Survivors + 1 Killer Slot)", "fail");
         return;
     }
+    const isKillerSlot = players.length === 4;
     const newPlayer = {
         id: nextPlayerId++,
-        name: `SURVIVOR ${nextPlayerId - 1}`,
+        name: isKillerSlot ? "KILLER SLOT" : `SURVIVOR ${players.length + 1}`,
         score: 0,
         currentChallenge: null
     };
     players.push(newPlayer);
-    generateChallengeForPlayer(newPlayer);
+    generateChallengeForPlayer(newPlayer, isKillerSlot);
     renderAllPlayers();
     showNotification(`➕ Added ${newPlayer.name}`);
 }
@@ -333,8 +387,12 @@ window.removePlayer = function(playerId) {
         showNotification("Cannot remove last player!", "fail");
         return;
     }
-    const removed = players.find(p => p.id === playerId);
-    players = players.filter(p => p.id !== playerId);
+    const index = players.findIndex(p => p.id === playerId);
+    if (index === 4) {
+        showNotification("Cannot remove the 5th Killer Slot manually!", "fail");
+        return;
+    }
+    const removed = players.splice(index, 1)[0];
     renderAllPlayers();
     showNotification(`➖ Removed ${removed.name}`);
 };
@@ -342,34 +400,27 @@ window.removePlayer = function(playerId) {
 window.completeChallenge = function(playerId) {
     const player = players.find(p => p.id === playerId);
     if (!player || !player.currentChallenge) return;
-    
-    const points = player.currentChallenge.points;
-    player.score += points;
-    
+    player.score += player.currentChallenge.points;
     addToHistory({
         timestamp: new Date().toLocaleTimeString(),
         playerName: player.name,
         challenge: player.currentChallenge.title,
-        points: points,
+        points: player.currentChallenge.points,
         result: 'COMPLETED'
     });
-    
-    showNotification(`✅ ${player.name} +${points} points!`);
-    generateChallengeForPlayer(player);
+    showNotification(`✅ ${player.name} +${player.currentChallenge.points} points!`);
+    const isKillerSlot = players.findIndex(p => p.id === playerId) === 4;
+    generateChallengeForPlayer(player, isKillerSlot);
     renderAllPlayers();
 };
 
 window.failChallenge = function(playerId) {
     const player = players.find(p => p.id === playerId);
     if (!player || !player.currentChallenge) return;
-    
     const diff = difficultyConfig[player.currentChallenge.difficulty];
-    const shots = diff.failShots;
-    
     if (currentMode === 'drinking') {
-        showNotification(`🍺 ${player.name} must take ${shots} SHOT${shots > 1 ? 'S' : '!'} 🍺`, "fail");
+        showNotification(`🍺 ${player.name} must take ${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : '!'} 🍺`, "fail");
     }
-    
     addToHistory({
         timestamp: new Date().toLocaleTimeString(),
         playerName: player.name,
@@ -377,15 +428,13 @@ window.failChallenge = function(playerId) {
         points: 0,
         result: 'FAILED'
     });
-    
-    generateChallengeForPlayer(player);
+    const isKillerSlot = players.findIndex(p => p.id === playerId) === 4;
+    generateChallengeForPlayer(player, isKillerSlot);
     renderAllPlayers();
 };
 
 function regenerateAllChallenges() {
-    players.forEach(player => {
-        generateChallengeForPlayer(player);
-    });
+    players.forEach((player, i) => generateChallengeForPlayer(player, i === 4));
     renderAllPlayers();
     showNotification("🎲 New challenges for all players!");
 }
@@ -393,19 +442,9 @@ function regenerateAllChallenges() {
 // Event Listeners
 globalGenerateBtn.addEventListener('click', regenerateAllChallenges);
 addPlayerBtn.addEventListener('click', addPlayer);
-clearHistoryBtn.addEventListener('click', () => {
-    globalHistory = [];
-    updateHistoryDisplay();
-    showNotification("History cleared!");
-});
-
-roleFilter.addEventListener('change', () => {
-    regenerateAllChallenges();
-});
-
-difficultyFilter.addEventListener('change', () => {
-    regenerateAllChallenges();
-});
+clearHistoryBtn.addEventListener('click', () => { globalHistory = []; updateHistoryDisplay(); });
+roleFilter.addEventListener('change', regenerateAllChallenges);
+difficultyFilter.addEventListener('change', regenerateAllChallenges);
 
 document.querySelectorAll('.mode-option').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -413,22 +452,18 @@ document.querySelectorAll('.mode-option').forEach(btn => {
         btn.classList.add('active');
         currentMode = btn.dataset.mode;
         regenerateAllChallenges();
-        showNotification(`🍺 Mode: ${currentMode.toUpperCase()}`);
     });
 });
 
-// Initialize with 2 players
-players.push({
-    id: nextPlayerId++,
-    name: "SURVIVOR 1",
-    score: 0,
-    currentChallenge: null
-});
-players.push({
-    id: nextPlayerId++,
-    name: "SURVIVOR 2",
-    score: 0,
-    currentChallenge: null
-});
-players.forEach(p => generateChallengeForPlayer(p));
+function updateHistoryDisplay() {
+    historyList.innerHTML = globalHistory.map(e => 
+        `<li>[${e.timestamp}] ${e.playerName} - ${e.challenge} ${e.result === 'FAILED' ? '💀 FAILED' : `✅ +${e.points}pts`}</li>`
+    ).join('');
+}
+
+// Initialize with 3 players (leaving room for 5th killer slot)
+players.push({ id: nextPlayerId++, name: "SURVIVOR 1", score: 0, currentChallenge: null });
+players.push({ id: nextPlayerId++, name: "SURVIVOR 2", score: 0, currentChallenge: null });
+players.push({ id: nextPlayerId++, name: "SURVIVOR 3", score: 0, currentChallenge: null });
+players.forEach((p, i) => generateChallengeForPlayer(p, false));
 renderAllPlayers();
