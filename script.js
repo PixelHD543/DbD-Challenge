@@ -145,31 +145,30 @@ function getItemImagePath(itemName) {
 }
 
 // ==================== CHALLENGES DATA ====================
-const challenges = {
-    survivor: [
-        { title: "Altruism Guardian", desc: "Safe unhook 3 survivors before any generators are completed", difficulty: "hard", points: 50 },
-        { title: "Stealth Master", desc: "Complete 1 full generator without being detected by the killer", difficulty: "medium", points: 30 },
-        { title: "Loop King", desc: "Keep the killer in a chase for 90 seconds without being hit", difficulty: "hard", points: 50 },
-        { title: "Gen Jockey", desc: "Repair 3 generators solo in a single match", difficulty: "medium", points: 35 },
-        { title: "Flashlight Savior", desc: "Blind the killer while they're carrying a survivor", difficulty: "extreme", points: 75 },
-        { title: "No Mither Warrior", desc: "Escape without being healed once", difficulty: "extreme", points: 100 },
-        { title: "Totem Hunter", desc: "Cleanse 3 totems before any generators are completed", difficulty: "medium", points: 35 },
-        { title: "Medic", desc: "Heal 4 health states on other survivors", difficulty: "easy", points: 20 },
-        { title: "Sole Survivor", desc: "Be the last survivor and escape through the exit gate", difficulty: "extreme", points: 100 },
-        { title: "Boon Buddy", desc: "Bless a hex totem and have teammates use it 3 times", difficulty: "medium", points: 40 }
-    ],
-    killer: [
-        { title: "Mori Master", desc: "Mori all 4 survivors in a single match", difficulty: "extreme", points: 100 },
-        { title: "Gen Patrol", desc: "Damage 10 generators in one match", difficulty: "medium", points: 35 },
-        { title: "3-Gen God", desc: "Defend a 3-gen situation for 10 minutes and win", difficulty: "hard", points: 60 },
-        { title: "Stealth Assassin", desc: "Get 4 grabs off survivors without entering chase", difficulty: "extreme", points: 85 },
-        { title: "Perkless Wonder", desc: "Get a 4k without using any perks", difficulty: "extreme", points: 100 },
-        { title: "Basement Party", desc: "Sacrifice 2 survivors in the basement", difficulty: "easy", points: 20 },
-        { title: "Hex Guardian", desc: "Defend your hex totem and get 2 kills before it's cleansed", difficulty: "hard", points: 50 },
-        { title: "Merciless", desc: "Get a 4k with at least 8 hook stages", difficulty: "hard", points: 60 },
-        { title: "Slug Race", desc: "Down all 4 survivors at once (no hooks)", difficulty: "extreme", points: 90 }
-    ]
-};
+const survivorChallenges = [
+    { title: "Altruism Guardian", desc: "Safe unhook 3 survivors before any generators are completed", difficulty: "hard", points: 50 },
+    { title: "Stealth Master", desc: "Complete 1 full generator without being detected by the killer", difficulty: "medium", points: 30 },
+    { title: "Loop King", desc: "Keep the killer in a chase for 90 seconds without being hit", difficulty: "hard", points: 50 },
+    { title: "Gen Jockey", desc: "Repair 3 generators solo in a single match", difficulty: "medium", points: 35 },
+    { title: "Flashlight Savior", desc: "Blind the killer while they're carrying a survivor", difficulty: "extreme", points: 75 },
+    { title: "No Mither Warrior", desc: "Escape without being healed once", difficulty: "extreme", points: 100 },
+    { title: "Totem Hunter", desc: "Cleanse 3 totems before any generators are completed", difficulty: "medium", points: 35 },
+    { title: "Medic", desc: "Heal 4 health states on other survivors", difficulty: "easy", points: 20 },
+    { title: "Sole Survivor", desc: "Be the last survivor and escape through the exit gate", difficulty: "extreme", points: 100 },
+    { title: "Boon Buddy", desc: "Bless a hex totem and have teammates use it 3 times", difficulty: "medium", points: 40 }
+];
+
+const killerChallenges = [
+    { title: "Mori Master", desc: "Mori all 4 survivors in a single match", difficulty: "extreme", points: 100 },
+    { title: "Gen Patrol", desc: "Damage 10 generators in one match", difficulty: "medium", points: 35 },
+    { title: "3-Gen God", desc: "Defend a 3-gen situation for 10 minutes and win", difficulty: "hard", points: 60 },
+    { title: "Stealth Assassin", desc: "Get 4 grabs off survivors without entering chase", difficulty: "extreme", points: 85 },
+    { title: "Perkless Wonder", desc: "Get a 4k without using any perks", difficulty: "extreme", points: 100 },
+    { title: "Basement Party", desc: "Sacrifice 2 survivors in the basement", difficulty: "easy", points: 20 },
+    { title: "Hex Guardian", desc: "Defend your hex totem and get 2 kills before it's cleansed", difficulty: "hard", points: 50 },
+    { title: "Merciless", desc: "Get a 4k with at least 8 hook stages", difficulty: "hard", points: 60 },
+    { title: "Slug Race", desc: "Down all 4 survivors at once (no hooks)", difficulty: "extreme", points: 90 }
+];
 
 const difficultyConfig = {
     easy: { color: "#4ecdc4", icon: "⭐", name: "EASY", failShots: 3 },
@@ -183,13 +182,15 @@ const drinkingRules = {
         "Take a sip when you miss a skill check",
         "Take a drink when you get hooked",
         "Everyone drinks when the killer gets a 4k",
-        "Take a sip when you sandbag a teammate"
+        "Take a sip when you sandbag a teammate",
+        "Take a drink when you're the first down"
     ],
     killer: [
         "Take a sip when a survivor teabags",
         "Take a drink when you lose a chase",
         "Everyone drinks when a survivor flashlight saves",
-        "Everyone cheers when you get a 4k"
+        "Everyone cheers when you get a 4k",
+        "Take a sip when a gen pops"
     ]
 };
 
@@ -229,31 +230,22 @@ function getRandomBuild(isSurvivor) {
     return { perks, items };
 }
 
-function getFilteredChallenges() {
-    const role = roleFilter.value;
+function getFilteredChallenges(isSurvivor) {
     const difficulty = difficultyFilter.value;
-    let pool = [];
-    if (role === "survivor") pool = [...challenges.survivor];
-    else if (role === "killer") pool = [...challenges.killer];
-    else pool = [...challenges.survivor, ...challenges.killer];
-    if (difficulty !== "all") pool = pool.filter(c => c.difficulty === difficulty);
-    return pool.length ? pool : [...challenges.survivor, ...challenges.killer];
+    let pool = isSurvivor ? [...survivorChallenges] : [...killerChallenges];
+    if (difficulty !== "all") {
+        pool = pool.filter(c => c.difficulty === difficulty);
+    }
+    return pool.length ? pool : (isSurvivor ? survivorChallenges : killerChallenges);
 }
 
 function generateChallengeForPlayer(player, isKillerSlot = false) {
-    const pool = getFilteredChallenges();
-    let challenge, isSurvivor;
-    
-    if (isKillerSlot) {
-        challenge = getRandomItem(challenges.killer);
-        isSurvivor = false;
-    } else {
-        challenge = getRandomItem(pool);
-        isSurvivor = challenges.survivor.includes(challenge);
-    }
-    
+    // Force survivor for slots 1-4, killer only for slot 5
+    const isSurvivor = !isKillerSlot;
+    const pool = getFilteredChallenges(isSurvivor);
+    const challenge = getRandomItem(pool);
     const build = getRandomBuild(isSurvivor);
-    const killerName = !isSurvivor ? getRandomKiller() : null;
+    const killerName = (!isSurvivor) ? getRandomKiller() : null;
     
     player.currentChallenge = { ...challenge, isSurvivor, build, killerName };
     return player.currentChallenge;
@@ -284,186 +276,14 @@ function renderPlayerCard(player, index) {
     const roleClass = challenge.isSurvivor ? 'survivor-badge' : 'killer-badge';
     const roleText = challenge.isSurvivor ? 'SURVIVOR' : 'KILLER';
     
-    // Killer portrait for 5th slot
-    const killerPortraitHTML = (!challenge.isSurvivor && challenge.killerName) ? `
+    // Killer portrait for 5th slot only
+    const killerPortraitHTML = (!challenge.isSurvivor && challenge.killerName && isKillerSlot) ? `
         <div class="killer-portrait">
-            <img src="${getKillerPortrait(challenge.killerName)}" alt="${challenge.killerName}" class="killer-img">
-            <span class="killer-name">${challenge.killerName}</span>
+            <img src="${getKillerPortrait(challenge.killerName)}" alt="${challenge.killerName}" class="killer-img" 
+                 onerror="this.src='https://via.placeholder.com/100?text=Killer'">
+            <div class="killer-name">${challenge.killerName}</div>
         </div>
     ` : '';
     
     const perksHTML = challenge.build.perks.map(perk => {
-        const imgPath = getPerkImagePath(perk, challenge.isSurvivor);
-        return `
-            <div class="perk-item">
-                <img src="${imgPath}" class="perk-icon-large" alt="${perk}" 
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span class="perk-name">${perk}</span>
-            </div>
-        `;
-    }).join('');
-    
-    const itemsHTML = challenge.isSurvivor ? challenge.build.items.map(item => {
-        const imgPath = getItemImagePath(item);
-        return `
-            <div class="perk-item">
-                <img src="${imgPath}" class="perk-icon-large" alt="${item}" 
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span class="perk-name">${item}</span>
-            </div>
-        `;
-    }).join('') : '<div class="perk-item">🔪 Killer Add-ons</div>';
-    
-    const drinkingHTML = currentMode === 'drinking' ? `
-        <div class="drinking-rules">
-            <h4>🍺 DRINKING RULES</h4>
-            <ul>${drinkingRules[challenge.isSurvivor ? 'survivor' : 'killer'].slice(0,2).map(r => `<li>${r}</li>`).join('')}</ul>
-            <p class="fail-penalty">💀 FAIL: ${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : ''}</p>
-        </div>
-    ` : '';
-    
-    const slotClass = isKillerSlot ? 'player-card killer-slot' : 'player-card';
-    
-    return `
-        <div class="${slotClass}" data-player-id="${player.id}">
-            <div class="player-header">
-                <div class="player-name-section">
-                    <div class="player-avatar">${isKillerSlot ? '🔪' : '🔦'}</div>
-                    <div class="player-name">${player.name}</div>
-                    <span class="role-badge ${roleClass}">${roleText}</span>
-                </div>
-                <div class="player-score">🏆 ${player.score}</div>
-                ${!isKillerSlot ? `<button class="remove-player-btn" onclick="removePlayer(${player.id})">🗑️</button>` : '<span class="custom-slot-badge">CUSTOM</span>'}
-            </div>
-            
-            <div class="challenge-area">
-                ${killerPortraitHTML}
-                <div class="challenge-title">${challenge.title}</div>
-                <div class="challenge-desc">${challenge.desc}</div>
-                <span class="difficulty" style="background: ${diff.color}">${diff.icon} ${diff.name}</span>
-                
-                <div class="build-section">
-                    <h4>🎭 PERKS (${challenge.isSurvivor ? 'Survivor' : 'Killer'})</h4>
-                    <div class="perks-grid">${perksHTML}</div>
-                    <h4>📦 ${challenge.isSurvivor ? 'ITEMS' : 'ADD-ONS'}</h4>
-                    <div class="items-grid">${itemsHTML}</div>
-                </div>
-                
-                ${drinkingHTML}
-                
-                <div class="challenge-actions">
-                    <button class="btn-pass" onclick="completeChallenge(${player.id})">✓ PASS (+${challenge.points})</button>
-                    <button class="btn-fail" onclick="failChallenge(${player.id})">💀 FAIL</button>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function renderAllPlayers() {
-    playersGrid.innerHTML = players.map((p, i) => renderPlayerCard(p, i)).join('');
-}
-
-function addPlayer() {
-    if (players.length >= 5) {
-        showNotification("Maximum 5 players reached! (4 Survivors + 1 Killer Slot)", "fail");
-        return;
-    }
-    const isKillerSlot = players.length === 4;
-    const newPlayer = {
-        id: nextPlayerId++,
-        name: isKillerSlot ? "KILLER SLOT" : `SURVIVOR ${players.length + 1}`,
-        score: 0,
-        currentChallenge: null
-    };
-    players.push(newPlayer);
-    generateChallengeForPlayer(newPlayer, isKillerSlot);
-    renderAllPlayers();
-    showNotification(`➕ Added ${newPlayer.name}`);
-}
-
-window.removePlayer = function(playerId) {
-    if (players.length <= 1) {
-        showNotification("Cannot remove last player!", "fail");
-        return;
-    }
-    const index = players.findIndex(p => p.id === playerId);
-    if (index === 4) {
-        showNotification("Cannot remove the 5th Killer Slot manually!", "fail");
-        return;
-    }
-    const removed = players.splice(index, 1)[0];
-    renderAllPlayers();
-    showNotification(`➖ Removed ${removed.name}`);
-};
-
-window.completeChallenge = function(playerId) {
-    const player = players.find(p => p.id === playerId);
-    if (!player || !player.currentChallenge) return;
-    player.score += player.currentChallenge.points;
-    addToHistory({
-        timestamp: new Date().toLocaleTimeString(),
-        playerName: player.name,
-        challenge: player.currentChallenge.title,
-        points: player.currentChallenge.points,
-        result: 'COMPLETED'
-    });
-    showNotification(`✅ ${player.name} +${player.currentChallenge.points} points!`);
-    const isKillerSlot = players.findIndex(p => p.id === playerId) === 4;
-    generateChallengeForPlayer(player, isKillerSlot);
-    renderAllPlayers();
-};
-
-window.failChallenge = function(playerId) {
-    const player = players.find(p => p.id === playerId);
-    if (!player || !player.currentChallenge) return;
-    const diff = difficultyConfig[player.currentChallenge.difficulty];
-    if (currentMode === 'drinking') {
-        showNotification(`🍺 ${player.name} must take ${diff.failShots} SHOT${diff.failShots > 1 ? 'S' : '!'} 🍺`, "fail");
-    }
-    addToHistory({
-        timestamp: new Date().toLocaleTimeString(),
-        playerName: player.name,
-        challenge: player.currentChallenge.title,
-        points: 0,
-        result: 'FAILED'
-    });
-    const isKillerSlot = players.findIndex(p => p.id === playerId) === 4;
-    generateChallengeForPlayer(player, isKillerSlot);
-    renderAllPlayers();
-};
-
-function regenerateAllChallenges() {
-    players.forEach((player, i) => generateChallengeForPlayer(player, i === 4));
-    renderAllPlayers();
-    showNotification("🎲 New challenges for all players!");
-}
-
-// Event Listeners
-globalGenerateBtn.addEventListener('click', regenerateAllChallenges);
-addPlayerBtn.addEventListener('click', addPlayer);
-clearHistoryBtn.addEventListener('click', () => { globalHistory = []; updateHistoryDisplay(); });
-roleFilter.addEventListener('change', regenerateAllChallenges);
-difficultyFilter.addEventListener('change', regenerateAllChallenges);
-
-document.querySelectorAll('.mode-option').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.mode-option').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentMode = btn.dataset.mode;
-        regenerateAllChallenges();
-    });
-});
-
-function updateHistoryDisplay() {
-    historyList.innerHTML = globalHistory.map(e => 
-        `<li>[${e.timestamp}] ${e.playerName} - ${e.challenge} ${e.result === 'FAILED' ? '💀 FAILED' : `✅ +${e.points}pts`}</li>`
-    ).join('');
-}
-
-// Initialize with 3 players (leaving room for 5th killer slot)
-players.push({ id: nextPlayerId++, name: "SURVIVOR 1", score: 0, currentChallenge: null });
-players.push({ id: nextPlayerId++, name: "SURVIVOR 2", score: 0, currentChallenge: null });
-players.push({ id: nextPlayerId++, name: "SURVIVOR 3", score: 0, currentChallenge: null });
-players.forEach((p, i) => generateChallengeForPlayer(p, false));
-renderAllPlayers();
+        const imgPath = getPerkImagePath(perk, challenge.isSurviv
