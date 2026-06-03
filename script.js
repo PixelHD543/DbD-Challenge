@@ -400,4 +400,35 @@ clearHistoryBtn.addEventListener('click', () => {
 });
 
 roleFilter.addEventListener('change', () => {
-   
+    regenerateAllChallenges();
+});
+
+difficultyFilter.addEventListener('change', () => {
+    regenerateAllChallenges();
+});
+
+document.querySelectorAll('.mode-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMode = btn.dataset.mode;
+        regenerateAllChallenges();
+        showNotification(`🍺 Mode: ${currentMode.toUpperCase()}`);
+    });
+});
+
+// Initialize with 2 players
+players.push({
+    id: nextPlayerId++,
+    name: "SURVIVOR 1",
+    score: 0,
+    currentChallenge: null
+});
+players.push({
+    id: nextPlayerId++,
+    name: "SURVIVOR 2",
+    score: 0,
+    currentChallenge: null
+});
+players.forEach(p => generateChallengeForPlayer(p));
+renderAllPlayers();
