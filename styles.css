@@ -1,299 +1,177 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #eee;
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-h1 {
-    font-size: 2.5em;
-    text-shadow: 0 0 10px rgba(255,0,0,0.5);
-    animation: glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
-    from { text-shadow: 0 0 5px rgba(255,0,0,0.3); }
-    to { text-shadow: 0 0 20px rgba(255,0,0,0.8); }
-}
-
-.subtitle {
-    color: #ff6b6b;
-    margin-top: 10px;
-}
-
-.mode-selector {
+/* Filters Bar */
+.filters-bar {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-.mode-btn {
-    padding: 10px 25px;
-    font-size: 1.1em;
-    font-weight: bold;
-    border: 2px solid #ff6b6b;
-    background: transparent;
-    color: #ff6b6b;
-    cursor: pointer;
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,0,0,0.3);
+    padding: 8px 15px;
     border-radius: 25px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    color: #ffd93d;
+}
+
+.filter-group select, .mode-buttons {
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid #ff6b6b;
+}
+
+.mode-btn-small {
+    padding: 5px 12px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    cursor: pointer;
+    border-radius: 15px;
     transition: all 0.3s;
 }
 
-.mode-btn.active {
+.mode-btn-small.active {
     background: #ff6b6b;
     color: #1a1a2e;
 }
 
-.mode-btn:hover {
-    transform: scale(1.05);
-}
-
-.challenge-card {
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    margin-bottom: 30px;
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-}
-
-.role-badge {
-    display: inline-block;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    background: #ff6b6b;
-    color: #1a1a2e;
-}
-
-.challenge-content h2 {
-    font-size: 1.8em;
-    margin-bottom: 15px;
-    color: #ff6b6b;
-}
-
-.challenge-content p {
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.build-section {
-    background: rgba(0,0,0,0.3);
-    padding: 15px;
+/* Player Tracker */
+.player-tracker {
+    background: linear-gradient(135deg, rgba(78,205,196,0.2), rgba(255,107,107,0.2));
     border-radius: 15px;
-    margin-top: 20px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.build-section h3 {
-    margin-bottom: 10px;
+.player-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.player-nav {
+    background: #ff6b6b;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.player-nav:hover {
+    transform: scale(1.1);
+}
+
+.player-info {
+    text-align: center;
+    min-width: 120px;
+}
+
+.player-label {
+    font-size: 0.8em;
     color: #ffd93d;
 }
 
-.perks, .items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 10px 0;
+.player-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    display: block;
 }
 
-.perk-item, .item-item {
-    background: rgba(255,107,107,0.2);
+.player-name {
+    font-size: 0.9em;
+}
+
+.player-action {
     padding: 5px 12px;
     border-radius: 15px;
-    font-size: 0.9em;
-    border-left: 3px solid #ff6b6b;
+    border: none;
+    cursor: pointer;
+    background: #4ecdc4;
+    color: #1a1a2e;
+    font-weight: bold;
 }
 
-.drinking-rules {
-    margin-top: 20px;
-    background: rgba(255,107,107,0.2);
-    padding: 15px;
-    border-radius: 15px;
-    border: 2px solid #ff6b6b;
+.player-action.danger {
+    background: #ff4444;
+    color: white;
 }
 
-.drinking-rules h3 {
+.player-score {
+    font-size: 1.3em;
+    background: rgba(0,0,0,0.5);
+    padding: 8px 20px;
+    border-radius: 25px;
+}
+
+.player-score span:first-child {
     color: #ffd93d;
-    margin-bottom: 10px;
 }
 
-.drinking-rules ul {
-    list-style: none;
-    padding-left: 0;
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
-.drinking-rules li {
-    padding: 5px 0;
-    padding-left: 20px;
-    position: relative;
-}
-
-.drinking-rules li:before {
-    content: "🍺";
-    position: absolute;
-    left: 0;
+.generate-btn, .complete-btn, .fail-btn {
+    flex: 1;
+    padding: 12px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
 .generate-btn {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.2em;
-    font-weight: bold;
     background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-    border: none;
-    border-radius: 50px;
     color: white;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: transform 0.2s;
-}
-
-.generate-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255,107,107,0.4);
-}
-
-.generate-btn:active {
-    transform: translateY(0);
-}
-
-.history-section {
-    background: rgba(0,0,0,0.3);
-    border-radius: 15px;
-    padding: 20px;
-}
-
-.history-section h3 {
-    margin-bottom: 15px;
-}
-
-#historyList {
-    list-style: none;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-#historyList li {
-    padding: 8px;
-    margin: 5px 0;
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    font-size: 0.9em;
-}
-
-.clear-btn {
-    margin-top: 10px;
-    padding: 5px 15px;
-    background: rgba(255,107,107,0.3);
-    border: 1px solid #ff6b6b;
-    color: #ff6b6b;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.clear-btn:hover {
-    background: rgba(255,107,107,0.5);
-}
-/* Difficulty Badge */
-.difficulty-badge {
-    display: inline-block;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-/* Points System */
-.points-system {
-    margin-top: 20px;
-    background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,107,0.1));
-    border-radius: 15px;
-    padding: 15px;
-}
-
-.points-card {
-    text-align: center;
-}
-
-.points-label {
-    font-size: 0.9em;
-    letter-spacing: 2px;
-    color: #ffd93d;
-}
-
-.points-value {
-    font-size: 2.5em;
-    font-weight: bold;
-    display: block;
-    margin: 10px 0;
-    color: #ffd93d;
-    transition: transform 0.2s;
 }
 
 .complete-btn {
     background: #4ecdc4;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 25px;
     color: #1a1a2e;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 10px 0;
-    transition: all 0.3s;
 }
 
-.complete-btn:hover {
-    transform: scale(1.05);
-    background: #ff6b6b;
+.fail-btn {
+    background: #ff4444;
     color: white;
 }
 
-.notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #4ecdc4;
-    color: #1a1a2e;
-    padding: 12px 24px;
+.generate-btn:hover, .complete-btn:hover, .fail-btn:hover {
+    transform: translateY(-2px);
+}
+
+.drinking-note {
+    background: rgba(255,68,68,0.3);
+    padding: 5px;
     border-radius: 10px;
-    animation: slideIn 0.3s ease;
-    z-index: 1000;
+    margin: 10px 0;
+    font-size: 0.9em;
 }
 
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-.perk-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.perk-icon {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
+.notification.fail {
+    background: #ff4444;
+    color: white;
 }
