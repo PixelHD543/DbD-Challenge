@@ -135,14 +135,20 @@ h1 {
 
 .dbd-btn-primary:hover { transform: translateY(-2px); }
 
-/* Players Grid */
+/* Players Grid - 2 columns for better spacing */
 .players-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 25px;
     margin-bottom: 30px;
 }
 
+/* Make the 5th player (killer slot) full width if alone in second row */
+.players-grid:has(.player-card:last-child:nth-child(odd)) .player-card:last-child {
+    grid-column: span 2;
+}
+
+/* Player Cards */
 .player-card {
     background: var(--card-bg);
     border-radius: 15px;
@@ -150,12 +156,21 @@ h1 {
     border: 1px solid rgba(230,57,70,0.3);
     transition: transform 0.2s, box-shadow 0.2s;
     backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
 }
 
 .player-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     border-color: var(--dbd-primary);
+}
+
+/* Killer Slot Special Design */
+.player-card.killer-slot {
+    border: 3px solid #e63946;
+    background: linear-gradient(135deg, rgba(230,57,70,0.2), rgba(15,25,45,0.95));
+    box-shadow: 0 0 20px rgba(230,57,70,0.4);
 }
 
 .player-header {
@@ -165,26 +180,29 @@ h1 {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(230,57,70,0.3);
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .player-name-section {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .player-avatar {
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .player-name {
     font-family: 'Bebas Neue', cursive;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     letter-spacing: 1px;
 }
 
 .player-score {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: bold;
     background: rgba(0,0,0,0.5);
     padding: 5px 15px;
@@ -205,13 +223,60 @@ h1 {
 .survivor-badge { background: #4ecdc4; color: #1a1a2e; }
 .killer-badge { background: #e63946; color: white; }
 
+.custom-slot-badge {
+    background: #e63946;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.remove-player-btn {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 8px;
+    transition: color 0.2s;
+}
+
+.remove-player-btn:hover { color: var(--dbd-primary); }
+
+/* Challenge Area */
 .challenge-area {
     padding: 20px;
+    flex: 1;
+}
+
+/* Killer Portrait */
+.killer-portrait {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+.killer-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e63946;
+}
+
+.killer-name {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #e63946;
 }
 
 .challenge-title {
     font-family: 'Bebas Neue', cursive;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: var(--dbd-primary);
     margin-bottom: 10px;
 }
@@ -225,60 +290,86 @@ h1 {
 
 .difficulty {
     display: inline-block;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 15px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
+/* Build Section - FIXED to fill space */
 .build-section {
     background: rgba(0,0,0,0.3);
     border-radius: 10px;
-    padding: 12px;
+    padding: 15px;
     margin: 15px 0;
 }
 
 .build-section h4 {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--dbd-gold);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
 }
 
-.perks-grid, .items-grid {
+/* Perks Grid - 2x2 layout to fill space */
+.perks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.items-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 12px;
     margin-bottom: 10px;
 }
 
+/* BIGGER Perk Images */
 .perk-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 12px;
     background: rgba(255,255,255,0.1);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    padding: 10px 12px;
+    border-radius: 10px;
+    transition: all 0.2s;
 }
 
-.perk-icon {
-    width: 24px;
-    height: 24px;
+.perk-item:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.02);
+}
+
+.perk-icon-large {
+    width: 48px;
+    height: 48px;
     object-fit: contain;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.5);
+    padding: 4px;
 }
 
+.perk-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    flex: 1;
+}
+
+/* Drinking Rules */
 .drinking-rules {
     background: rgba(230,57,70,0.15);
     border-left: 3px solid var(--dbd-primary);
-    padding: 10px;
+    padding: 12px;
     margin: 15px 0;
     border-radius: 5px;
 }
 
 .drinking-rules h4 {
     color: var(--dbd-primary);
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-size: 0.8rem;
 }
 
@@ -288,8 +379,8 @@ h1 {
 }
 
 .drinking-rules li {
-    padding: 2px 0;
-    padding-left: 18px;
+    padding: 4px 0;
+    padding-left: 20px;
     position: relative;
 }
 
@@ -299,20 +390,30 @@ h1 {
     left: 0;
 }
 
+.fail-penalty {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    color: #ff8e8e;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Challenge Actions */
 .challenge-actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin-top: 15px;
 }
 
 .btn-pass, .btn-fail {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     border: none;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s;
+    font-size: 0.85rem;
 }
 
 .btn-pass {
@@ -328,18 +429,6 @@ h1 {
 .btn-pass:hover, .btn-fail:hover {
     transform: scale(1.02);
 }
-
-.remove-player-btn {
-    background: none;
-    border: none;
-    color: #888;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0 8px;
-    transition: color 0.2s;
-}
-
-.remove-player-btn:hover { color: var(--dbd-primary); }
 
 /* Add Player */
 .add-player-container {
@@ -442,96 +531,11 @@ h1 {
 }
 
 /* Responsive */
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
     .players-grid {
         grid-template-columns: 1fr;
     }
-}
-/* Larger Perk Images */
-.perk-icon-large {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.5);
-    padding: 4px;
-}
-
-.perk-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255,255,255,0.1);
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-}
-
-.perk-name {
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.perks-grid, .items-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-/* Killer Slot Special Design */
-.player-card.killer-slot {
-    border: 2px solid #e63946;
-    background: linear-gradient(135deg, rgba(230,57,70,0.15), rgba(15,25,45,0.95));
-    box-shadow: 0 0 15px rgba(230,57,70,0.3);
-}
-
-.killer-portrait {
-    text-align: center;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-}
-
-.killer-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #e63946;
-}
-
-.killer-name {
-    display: block;
-    margin-top: 5px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #e63946;
-}
-
-.custom-slot-badge {
-    background: #e63946;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
-.fail-penalty {
-    margin-top: 8px;
-    font-size: 0.7rem;
-    color: #ff8e8e;
-    text-align: center;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1000px) {
-    .perk-icon-large {
-        width: 32px;
-        height: 32px;
-    }
-    .perk-name {
-        font-size: 0.7rem;
+    .perks-grid {
+        grid-template-columns: 1fr;
     }
 }
