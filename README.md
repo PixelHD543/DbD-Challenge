@@ -1,4 +1,4 @@
-# Bead by Daylight 🎯🍻
+# Dead by Daylight 🎯🍻
 
 A random challenge generator for Dead by Daylight with drinking game mode!
 
