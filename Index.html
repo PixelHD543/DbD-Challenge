@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bead by Daylight - Challenge Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 BEAD BY DAYLIGHT 🍻</h1>
+            <p class="subtitle">Random Challenges & Drinking Game</p>
+        </header>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" data-mode="normal">🎯 Normal Mode</button>
+            <button class="mode-btn" data-mode="drinking">🍺 Drinking Mode</button>
+        </div>
+
+        <div class="challenge-card" id="challengeCard">
+            <div class="role-badge" id="roleBadge">SURVIVOR</div>
+            
+            <div class="challenge-content">
+                <h2 id="challengeTitle">Click to Generate</h2>
+                <p id="challengeDescription">Press the button below for a random challenge</p>
+                
+                <div class="build-section" id="buildSection">
+                    <h3>🎭 Random Build</h3>
+                    <div class="perks" id="perksList"></div>
+                    <div class="items" id="itemsList"></div>
+                </div>
+
+                <div class="drinking-rules" id="drinkingRules" style="display:none;">
+                    <h3>🍻 DRINKING RULES 🍻</h3>
+                    <ul id="drinkList"></ul>
+                </div>
+            </div>
+
+            <button class="generate-btn" id="generateBtn">🎲 GENERATE CHALLENGE 🎲</button>
+        </div>
+
+        <div class="history-section">
+            <h3>📜 Recent Challenges</h3>
+            <ul id="historyList"></ul>
+            <button id="clearHistoryBtn" class="clear-btn">Clear History</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
